@@ -216,7 +216,7 @@ public:
 class EWindow : public EWidget {
 private:
     friend class EApplicationSingleton;
-    
+
     HWND hwnd;
     WNDCLASSEX wcex;
     static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -225,6 +225,12 @@ public:
     EWindow(const EObject &object): EWidget(object) {
         this->initialize();
         EApplication->addWindow(this);
+    }
+    EWindow() {
+        this->width = 800;
+        this->height = 600;
+        this->initialize();
+        EApplication->addWindow(this); 
     }
     ~EWindow() {
         EApplication->removeWindow(this); 
