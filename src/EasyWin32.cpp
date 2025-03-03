@@ -1,4 +1,7 @@
 #include "EasyWin32.hpp"
+#include <winrt/Windows.UI.ViewManagement.h>
+#include <dwmapi.h>
+#pragma comment(lib, "dwmapi.lib")
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
@@ -65,6 +68,35 @@ void EWindow::initialize() {
 
     // 创建窗口
     this->hwnd = CreateWindowEx(NULL,this->title.c_str(), this->title.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, this->width, this->height, NULL, NULL, this->wcex.hInstance, NULL);
+    
+    this->updateThemeMode();
     ShowWindow(this->hwnd, SW_SHOW);
     UpdateWindow(this->hwnd);
+}
+
+void EWindow::updateThemeMode() {
+    BOOL isDark = FALSE;
+    switch (this->theme)
+    {
+    case ThemeMode::Light:
+        isDark = FALSE;
+        break;
+    case ThemeMode::Dark:
+        isDark = TRUE;
+        break;
+    default:{
+        auto settings = winrt::Windows::UI::ViewManagement::UISettings();
+        auto clr = settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+        isDark = ((5 * clr.G) + (2 * clr.R) + clr.B) > (8 * 128);
+        break;
+        }
+    }
+    //20 is DWMWA_USE_IMMERSIVE_DARK_MODE
+    DwmSetWindowAttribute(this->hwnd, 20, &isDark, sizeof(isDark));
+    UpdateWindow(this->hwnd);
+}
+
+void EWindow::setThemeMode(ThemeMode theme) {
+    this->theme = theme;
+    this->updateThemeMode(); 
 }

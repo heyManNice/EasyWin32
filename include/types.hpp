@@ -53,3 +53,14 @@ typedef std::map<HWND,EventEmitterEventMap> EventEmitterHWNDMap;
  * 
  */
 typedef std::map<HWND, EWindow*> EWindowMap;
+
+
+/**
+ * @brief 窗口主题色枚举
+ * 
+ */
+enum class ThemeMode {
+    Light,// 浅色主题
+    Dark,// 深色主题
+    Auto// 伴随系统自动主题
+};

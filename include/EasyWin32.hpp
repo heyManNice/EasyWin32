@@ -190,6 +190,8 @@ public:
  */
 class EWidget : public EObject {
 private:
+    friend class EWindow;
+    ThemeMode theme = ThemeMode::Auto;
     EWidget* parent;
 public:
     EWidget(EWidget* parent) {
@@ -221,6 +223,11 @@ private:
     WNDCLASSEX wcex;
     static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
     void initialize();
+    /**
+     * @brief 更新窗口主题色
+     * 
+     */
+    void updateThemeMode();
 public:
     EWindow(const EObject &object): EWidget(object) {
         this->initialize();
@@ -258,4 +265,11 @@ public:
     HWND getHWND() {
         return this->hwnd; 
     }
+    /**
+     * @brief 设置窗口主题色
+     * 
+     * 自动更新到窗口
+     * @param theme 
+     */
+    void setThemeMode(ThemeMode theme);
 };
