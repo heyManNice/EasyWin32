@@ -97,6 +97,12 @@ private:
     EWindowMap windowMap;
 
     /**
+     * @brief 应用程序的dpi，默认为96
+     * 
+     */
+    int dpi = 96;
+
+    /**
      * @brief 添加窗口
      * 
      * @param hwnd
@@ -166,6 +172,20 @@ public:
      * @return EWindow* 窗口实例,找不到则返回nullptr
      */
     EWindow* getEWindowByHWND(HWND hwnd);
+
+    /**
+     * @brief 获取当前应用程序的dpi
+     * 
+     */
+    int getDPI() {
+        return this->dpi; 
+    }
+
+    /**
+     * @brief 从显示器获取dpi
+     * 
+     */
+    void updateDpiFromMonitor();
 };
 
 
@@ -237,10 +257,6 @@ private:
      */
     void updateThemeMode();
 public:
-    EWindow(const EObject &object): EWidget(object) {
-        this->initialize();
-        EApplication->addWindow(this);
-    }
     EWindow() {
         this->width = 800;
         this->height = 600;
@@ -256,7 +272,7 @@ public:
      * @param message 事件类型
      * @param callback 回调函数
      */
-    void on(const UINT message, EventEmitterCallback callback) {
+    EWindow* on(const UINT message, EventEmitterCallback callback) {
         EApplication->eventEmitter.on(this->hwnd,message,callback);
         switch (message)
         {
@@ -267,6 +283,7 @@ public:
         default:
             break;
         }
+        return this;
     }
     /**
      * @brief 重绘窗口
@@ -289,4 +306,52 @@ public:
      * @param theme 
      */
     void setThemeMode(ThemeMode theme);
+
+    /**
+     * @brief 设置标题
+     * 
+     */
+    EWindow* setTitle(const std::string& title) {
+        this->title = title;
+        SetWindowText(this->hwnd, title.c_str());
+        return this;
+    }
+
+    /**
+     * @brief 设置宽高
+     * 
+     */
+    EWindow* setSize(const UINT32 width, const UINT32 height) {
+        this->width = width;
+        this->height = height;
+        RECT rect;
+        rect.left = 0;
+        rect.top = 0;
+        rect.right = width;
+        rect.bottom = height;
+        AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE); 
+        SetWindowPos(this->hwnd, NULL, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE | SWP_NOZORDER);
+        return this;
+    }
+
+    /**
+     * @brief 设置位置
+     *
+     */
+    EWindow* setPosition(const INT32 x, const INT32 y) {
+        this->x = x;
+        this->y = y;
+        SetWindowPos(this->hwnd, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+        return this;
+    }
+
+    /**
+     * @brief 显示窗口
+     * 
+     */
+    EWindow* show() {
+        ShowWindow(this->hwnd, SW_SHOW);
+        UpdateWindow(this->hwnd);
+        return this; 
+    }
 };

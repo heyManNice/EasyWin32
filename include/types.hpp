@@ -64,3 +64,12 @@ enum class ThemeMode {
     Dark,// 深色主题
     Auto// 伴随系统自动主题
 };
+
+
+/**
+ * @brief 事件注册的便捷宏
+ * 
+ */
+#define onEvent(event,callback) on(event,ECallback{callback;return 0;})
+#define onMouseLeftUp(callback) onEvent(WM_LBUTTONUP,callback)
+#define onDestroy(callback) onEvent(WM_DESTROY,callback)

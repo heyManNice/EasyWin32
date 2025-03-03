@@ -2,10 +2,19 @@
 #include <winrt/Windows.UI.ViewManagement.h>
 #include <dwmapi.h>
 #pragma comment(lib, "dwmapi.lib")
+#include <gdiplus.h>
+#pragma comment (lib,"Gdiplus.lib")
+
+#include <shellscalingapi.h>
+#pragma comment(lib, "Shcore.lib")
+
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    ULONG_PTR gdiplusToken;
+    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
     int ret = main(__argc, __argv);
 
     MSG msg;
@@ -14,6 +23,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
+    Gdiplus::GdiplusShutdown(gdiplusToken);
     return ret;
 }
 
@@ -28,8 +38,39 @@ LRESULT CALLBACK EWindow::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM
         if(window != nullptr) {
             window->updateThemeMode();
         }
+        //更新dpi
+        EApplication->updateDpiFromMonitor();
         break;
         }
+
+    case WM_PAINT:{
+        //初始化
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
+        Gdiplus::Graphics graphics(hdc);
+        graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
+        graphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
+        int dpi = EApplication->getDPI();
+        double scale = (double)dpi / 96;
+        graphics.ScaleTransform(scale, scale);
+        
+        //绘图
+        Gdiplus::Pen pen(Gdiplus::Color(255, 0, 0, 0));
+        pen.SetWidth(10);
+        graphics.DrawRectangle(&pen, 10, 10, 200, 100);
+        graphics.DrawEllipse(&pen, 500, 500, 100, 100);
+        Gdiplus::FontFamily fontFamily(L"HarmonyOS Sans sC");
+        Gdiplus::Font font(&fontFamily, 100, Gdiplus::FontStyleRegular, Gdiplus::UnitPixel);
+        Gdiplus::SolidBrush solidBrush(Gdiplus::Color(255, 0, 0, 0));
+        Gdiplus::PointF pointF(100, 300);
+        graphics.DrawString(L"Hello, GDI+!鸿蒙系统", -1, &font, pointF, &solidBrush);
+
+
+        //结束
+        EndPaint(hwnd, &ps);
+        break;
+        }
+
     default:
         break;
     }
@@ -71,6 +112,13 @@ BOOL EApplicationSingleton::removeWindow(EWindow* window) {
     return TRUE;
 }
 
+void EApplicationSingleton::updateDpiFromMonitor(){
+    HMONITOR hMonitor = MonitorFromWindow(NULL, MONITOR_DEFAULTTONEAREST);
+    UINT dpiX, dpiY;
+    GetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY);
+    this->dpi = dpiX;
+}
+
 void EWindow::initialize() {
     // 注册窗口类
     this->wcex.cbSize = sizeof(WNDCLASSEX);
@@ -88,11 +136,9 @@ void EWindow::initialize() {
     RegisterClassEx(&this->wcex);
 
     // 创建窗口
+    EApplication->updateDpiFromMonitor();
     this->hwnd = CreateWindowEx(NULL,this->title.c_str(), this->title.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, this->width, this->height, NULL, NULL, this->wcex.hInstance, NULL);
-    
     this->updateThemeMode();
-    ShowWindow(this->hwnd, SW_SHOW);
-    UpdateWindow(this->hwnd);
 }
 
 void EWindow::updateThemeMode() {
