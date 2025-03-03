@@ -250,6 +250,15 @@ public:
      */
     void on(const UINT message, EventEmitterCallback callback) {
         EApplication->eventEmitter.on(this->hwnd,message,callback);
+        switch (message)
+        {
+        case WM_PAINT:
+            //如果注册WM_PAINT回调后视图立即生效
+            this->rePaint();
+            break;
+        default:
+            break;
+        }
     }
     /**
      * @brief 重绘窗口
