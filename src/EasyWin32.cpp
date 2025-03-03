@@ -20,6 +20,19 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 EApplicationSingleton* EApplicationSingleton::instance = nullptr;
 
 LRESULT CALLBACK EWindow::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    switch (message)
+    {
+    //系统主题改变时更新窗口主题色
+    case WM_SETTINGCHANGE:{
+        auto window = EApplication->getEWindowByHWND(hwnd);
+        if(window != nullptr) {
+            window->updateThemeMode();
+        }
+        break;
+        }
+    default:
+        break;
+    }
     return EApplication->eventEmitter.emit(hwnd, message, wParam, lParam);
 }
 
@@ -33,6 +46,14 @@ EWindow* EApplicationSingleton::getEWindowByTitle(const std::string& title) {
     }
     return nullptr;
 }
+
+EWindow* EApplicationSingleton::getEWindowByHWND(HWND hwnd){
+    if(auto it = this->windowMap.find(hwnd); it!= this->windowMap.end()) {
+        return it->second; 
+    }
+    return nullptr;
+}
+
 
 BOOL EApplicationSingleton::addWindow(EWindow* window) {
     if(this->windowMap.find(window->hwnd) != this->windowMap.end()) {

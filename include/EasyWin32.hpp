@@ -158,6 +158,14 @@ public:
      * @return EWindow* 窗口实例,找不到则返回nullptr
      */
     EWindow* getEWindowByTitle(const std::string& title);
+
+    /**
+     * @brief 通过句柄获取窗口实例
+     *
+     * @param hwnd 窗口句柄
+     * @return EWindow* 窗口实例,找不到则返回nullptr
+     */
+    EWindow* getEWindowByHWND(HWND hwnd);
 };
 
 
