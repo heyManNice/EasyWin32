@@ -20,16 +20,5 @@ int main(int argc, char* argv[]){
         return 0;
     });
 
-
-    // 注册WM_PAINT回调后需要手动触发重绘才能立即生效
-    window->rePaint();
-
-    //测试窗口管理功能
-    auto mywin2 = EApplication->getEWindowByTitle("Test2");
-    mywin2->on(WM_DESTROY, ECallback{
-        EApplication->alert("Test2");
-        return 0;
-    });
-
     return 0;
 }
