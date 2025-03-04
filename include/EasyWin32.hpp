@@ -11,6 +11,9 @@
  * @return int 程序运行结束后的返回值，由用户给定
  */
 int main(int argc, char* argv[]);
+int Emain(int argc, char* argv[]);
+
+#define main(...) Emain(__VA_ARGS__)
 
 
 
@@ -118,6 +121,12 @@ private:
      * @return BOOL
      */
     BOOL removeWindow(EWindow* window);
+
+    /**
+     * @brief 入口函数是winMain的标记
+     * 
+     */
+    BOOL isWinMainEntry = FALSE;
 public:
     /**
      * @brief 事件发布订阅器
@@ -186,6 +195,24 @@ public:
      * 
      */
     void updateDpiFromMonitor();
+
+    /**
+     * @brief 设置入口函数是winMain的标记
+     * 
+     * 在winMain中调用
+     */
+    void _setIsWinMainEntry() {
+        this->isWinMainEntry = TRUE; 
+    }
+
+    /**
+     * @brief 获取当前程序的入口函数是否是winMain
+     * 
+     * @return BOOL 
+     */
+    BOOL getIsWinMainEntry() {
+        return this->isWinMainEntry; 
+    }
 };
 
 
