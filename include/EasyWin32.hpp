@@ -126,7 +126,7 @@ private:
      * @brief 入口函数是winMain的标记
      * 
      */
-    BOOL isWinMainEntry = FALSE;
+    BOOL isWinMainEntry = TRUE;
 public:
     /**
      * @brief 事件发布订阅器
@@ -201,8 +201,8 @@ public:
      * 
      * 在winMain中调用
      */
-    void _setIsWinMainEntry() {
-        this->isWinMainEntry = TRUE; 
+    void _setIsWinMainEntry(BOOL value) {
+        this->isWinMainEntry = value; 
     }
 
     /**
