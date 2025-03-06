@@ -12,7 +12,6 @@ class EWindow : public EWidget {
         friend class EApplicationSingleton;
     
         HWND hwnd;
-        WNDCLASSEXW wcex;
         static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
         void initialize();
         /**

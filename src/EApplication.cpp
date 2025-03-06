@@ -11,6 +11,21 @@ EApplicationSingleton *EApplicationSingleton::getInstance()
 {
     if (instance == nullptr)
     {
+        // 注册窗口类
+        WNDCLASSEXW wcex;
+        wcex.cbSize = sizeof(WNDCLASSEX);
+        wcex.style = CS_HREDRAW | CS_VREDRAW;
+        wcex.lpfnWndProc = &EWindow::WndProc;
+        wcex.cbClsExtra = 0;
+        wcex.cbWndExtra = 0;
+        wcex.hInstance = GetModuleHandle(NULL);
+        wcex.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+        wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+        wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+        wcex.lpszMenuName = NULL;
+        wcex.lpszClassName = L"EasyWin32ClassName";
+        wcex.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+        RegisterClassExW(&wcex);
         instance = new EApplicationSingleton();
     }
     return instance;

@@ -87,24 +87,17 @@ EWindow *EWindow::show()
 
 void EWindow::initialize()
 {
-    // 注册窗口类
-    this->wcex.cbSize = sizeof(WNDCLASSEX);
-    this->wcex.style = CS_HREDRAW | CS_VREDRAW;
-    this->wcex.lpfnWndProc = &EWindow::WndProc;
-    this->wcex.cbClsExtra = 0;
-    this->wcex.cbWndExtra = 0;
-    this->wcex.hInstance = GetModuleHandle(NULL);
-    this->wcex.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-    this->wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-    this->wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    this->wcex.lpszMenuName = NULL;
-    this->wcex.lpszClassName = this->title.c_str();
-    this->wcex.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
-    RegisterClassExW(&this->wcex);
-
     // 创建窗口
     EApplication->updateDpiFromMonitor();
-    this->hwnd = CreateWindowExW(NULL, this->title.c_str(), this->title.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, this->width, this->height, NULL, NULL, this->wcex.hInstance, NULL);
+    this->hwnd = CreateWindowExW(NULL, L"EasyWin32ClassName", this->title.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, this->width, this->height, NULL, NULL, GetModuleHandle(NULL), NULL);
+    if(this->hwnd == NULL)
+    {
+        int err = GetLastError();
+        wchar_t errorMsg[256];
+        FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), errorMsg, 256, NULL);
+        EApplication->alert(errorMsg, L"错误代码: " + std::to_wstring(err));
+        exit(1);
+    }
     this->updateThemeMode();
 }
 
