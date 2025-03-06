@@ -76,7 +76,7 @@ public:
      * @param ?type 类型
      * @return int
      */
-    int alert(const std::string &message, const std::string &caption = "Alert", UINT type = MB_OK);
+    int alert(const std::wstring &message, const std::wstring &caption = L"Alert", UINT type = MB_OK);
 
     /**
      * @brief 退出应用程序
@@ -91,7 +91,7 @@ public:
      * @param title 标题名称
      * @return EWindow* 窗口实例,找不到则返回nullptr
      */
-    EWindow *getEWindowByTitle(const std::string &title);
+    EWindow *getEWindowByTitle(const std::wstring &title);
 
     /**
      * @brief 通过句柄获取窗口实例
