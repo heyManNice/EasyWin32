@@ -12,7 +12,7 @@
 #include <shellscalingapi.h>
 #pragma comment(lib, "Shcore.lib")
 
-EWindow::EWindow()
+EWindow::EWindow() : EWidget(EApplication)
 {
     this->width = 800;
     this->height = 600;
@@ -90,7 +90,7 @@ void EWindow::initialize()
     // 创建窗口
     EApplication->updateDpiFromMonitor();
     this->hwnd = CreateWindowExW(NULL, L"EasyWin32ClassName", this->title.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, this->width, this->height, NULL, NULL, GetModuleHandle(NULL), NULL);
-    if(this->hwnd == NULL)
+    if (this->hwnd == NULL)
     {
         int err = GetLastError();
         wchar_t errorMsg[256];
