@@ -70,6 +70,10 @@ enum class ThemeMode {
  * @brief 事件注册的便捷宏
  * 
  */
-#define onEvent(event,callback) on(event,ECallback{callback;return 0;})
+#define onEvent(event,callback) on(event,ECallback{callback return 0;})
 #define onMouseLeftUp(callback) onEvent(WM_LBUTTONUP,callback)
 #define onDestroy(callback) onEvent(WM_DESTROY,callback)
+#define onPaint(callback) onEvent(WM_PAINT,callback)
+#define onClose(callback) onEvent(WM_CLOSE,callback)
+#define onEraseBkgnd(callback) on(WM_ERASEBKGND,ECallback{callback return 1;})
+#define onSetCursor(callback) on(WM_SETCURSOR,ECallback{callback return 1;})
