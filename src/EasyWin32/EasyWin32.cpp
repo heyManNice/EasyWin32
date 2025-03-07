@@ -6,7 +6,8 @@
 
 #include <iostream>
 
-
+#ifdef WinMain
+#undef WinMain
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
     SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
@@ -24,6 +25,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     Gdiplus::GdiplusShutdown(gdiplusToken);
     return ret;
 }
+#endif
 
 #ifdef main
 #undef main
@@ -36,4 +38,3 @@ int main(int argc, char* argv[]){
     return WinMain(GetModuleHandle(NULL), NULL, GetCommandLine(), SW_SHOWDEFAULT);
 }
 #endif
-#define main(...) Emain(__VA_ARGS__)
