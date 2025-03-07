@@ -11,4 +11,7 @@ private:
 public:
     ENode(ENode* parent = nullptr);
     ~ENode();
+    ENode* addChild(ENode* child);
+    ENode* getParent() const;
+    size_t getChildrenLength() const;
 };
