@@ -12,7 +12,7 @@ class EWindow : public EWidget {
         friend class EApplicationSingleton;
     
         HWND hwnd;
-        static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+        
         void initialize();
         /**
          * @brief 更新窗口主题色

@@ -8,6 +8,7 @@ ENode::ENode(ENode* parent){
     
 }
 ENode::~ENode(){
+    this->parent->removeChild(this);
     for (auto child : this->children){
         delete child;
     }
@@ -15,7 +16,17 @@ ENode::~ENode(){
 
 ENode* ENode::addChild(ENode* child){
     this->children.push_back(child);
-    return child;
+    return this;
+}
+
+ENode* ENode::removeChild(ENode* child){
+    for (auto it = this->children.begin(); it != this->children.end(); it++){
+        if (*it == child){
+            this->children.erase(it);
+            return this;
+        }
+    }
+    return this;
 }
 
 ENode* ENode::getParent() const{

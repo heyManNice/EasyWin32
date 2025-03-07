@@ -1,9 +1,6 @@
 #include "EWindow.hpp"
 #include "EApplication.hpp"
 
-#include <gdiplus.h>
-#pragma comment(lib, "Gdiplus.lib")
-
 #include <winrt/Windows.UI.ViewManagement.h>
 
 #include <dwmapi.h>
@@ -124,55 +121,4 @@ void EWindow::setThemeMode(ThemeMode theme)
 {
     this->theme = theme;
     this->updateThemeMode();
-}
-
-LRESULT CALLBACK EWindow::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    switch (message)
-    {
-    // 系统主题改变时更新窗口主题色
-    case WM_SETTINGCHANGE:
-    {
-        auto window = EApplication->getEWindowByHWND(hwnd);
-        if (window != nullptr)
-        {
-            window->updateThemeMode();
-        }
-        // 更新dpi
-        EApplication->updateDpiFromMonitor();
-        break;
-    }
-
-    case WM_PAINT:
-    {
-        // 初始化
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hwnd, &ps);
-        Gdiplus::Graphics graphics(hdc);
-        graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
-        graphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
-        int dpi = EApplication->getDPI();
-        double scale = (double)dpi / 96;
-        graphics.ScaleTransform(scale, scale);
-
-        // 绘图
-        Gdiplus::Pen pen(Gdiplus::Color(255, 0, 0, 0));
-        pen.SetWidth(10);
-        graphics.DrawRectangle(&pen, 10, 10, 200, 100);
-        graphics.DrawEllipse(&pen, 500, 500, 100, 100);
-        Gdiplus::FontFamily fontFamily(L"HarmonyOS Sans sC");
-        Gdiplus::Font font(&fontFamily, 100, Gdiplus::FontStyleRegular, Gdiplus::UnitPixel);
-        Gdiplus::SolidBrush solidBrush(Gdiplus::Color(255, 0, 0, 0));
-        Gdiplus::PointF pointF(100, 300);
-        graphics.DrawString(L"Hello, GDI+!鸿蒙系统", -1, &font, pointF, &solidBrush);
-
-        // 结束
-        EndPaint(hwnd, &ps);
-        break;
-    }
-
-    default:
-        break;
-    }
-    return EApplication->eventEmitter.emit(hwnd, message, wParam, lParam);
 }

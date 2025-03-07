@@ -11,6 +11,7 @@ public:
     ENode(ENode* parent = nullptr);
     ~ENode();
     virtual ENode* addChild(ENode* child);
+    virtual ENode* removeChild(ENode* child);
     ENode* getParent() const;
     size_t getChildrenLength() const;
 };

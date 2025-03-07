@@ -20,6 +20,7 @@ private:
     EApplicationSingleton(const EApplicationSingleton &) {}
     EApplicationSingleton &operator=(const EApplicationSingleton &) {}
 
+    static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
     /**
      * @brief 应用程序的dpi，默认为96
      *

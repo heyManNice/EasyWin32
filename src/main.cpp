@@ -10,7 +10,8 @@ int main(int argc, char* argv[]){
         EApplication->quit();
     )
     ->onMouseLeftUp(
-        EApplication->alert(std::to_wstring(EApplication->getDPI()));
+        size_t num = EApplication->getChildrenLength();
+        EApplication->alert(std::to_wstring(num));
     )
     ->show();
 
@@ -20,7 +21,8 @@ int main(int argc, char* argv[]){
     auto win2 = new EWindow();
     win2->show();
 
-    size_t num = EApplication->getChildrenLength();
-    EApplication->alert(std::to_wstring(num));
+    auto win3 = new EWindow();
+    win3->show();
+
     return 0;
 }
