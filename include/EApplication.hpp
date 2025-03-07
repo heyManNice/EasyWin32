@@ -1,12 +1,13 @@
 #pragma once
 #include "types.hpp"
 #include "EventEmitter.hpp"
+#include "ENode.hpp"
 
 /**
  * @brief 应用程序类，用于创建应用程序
  * 这是一个单例类，在一个项目中只能创建一个实例。
  */
-class EApplicationSingleton
+class EApplicationSingleton : public ENode
 {
 private:
     friend class EWindow;

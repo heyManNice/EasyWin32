@@ -60,7 +60,7 @@ EWindow *EApplicationSingleton::getEWindowByTitle(const std::wstring &title)
 {
     for (auto it = this->windowMap.begin(); it != this->windowMap.end(); it++)
     {
-        if (it->second->title == title)
+        if (it->second->getTitle() == title)
         {
             return it->second;
         }
