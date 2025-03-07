@@ -15,10 +15,11 @@
  * @param argv 传入程序的参数字符串数组
  * @return int 程序运行结束后的返回值，由用户给定
  */
-int Emain(int argc, char* argv[]);
+int Emain(int, char* []);
+int Emain();
 
 /**
- * @brief 推荐的形式参数应当为int argc, char* argv[]
+ * @brief 推荐的形式参数应当为int, char* []
  * 
  */
 #define main(...) Emain(__VA_ARGS__)
