@@ -58,11 +58,11 @@ BOOL EApplicationSingleton::getIsWinMainEntry()
 
 EWindow *EApplicationSingleton::getEWindowByTitle(const std::wstring &title)
 {
-    for (auto it = this->windowMap.begin(); it != this->windowMap.end(); it++)
-    {
-        if (it->second->getTitle() == title)
-        {
-            return it->second;
+    for(auto it = this->children.begin(); it != this->children.end(); it++){
+        if (auto window = dynamic_cast<EWindow*>(*it)){
+            if (window->getTitle() == title){
+                return window;
+            } 
         }
     }
     return nullptr;
@@ -70,31 +70,14 @@ EWindow *EApplicationSingleton::getEWindowByTitle(const std::wstring &title)
 
 EWindow *EApplicationSingleton::getEWindowByHWND(HWND hwnd)
 {
-    if (auto it = this->windowMap.find(hwnd); it != this->windowMap.end())
-    {
-        return it->second;
+    for(auto it = this->children.begin(); it != this->children.end(); it++){
+        if (auto window = dynamic_cast<EWindow*>(*it)){
+            if (window->getHWND() == hwnd){
+                return window;
+            } 
+        }
     }
     return nullptr;
-}
-
-BOOL EApplicationSingleton::addWindow(EWindow *window)
-{
-    if (this->windowMap.find(window->hwnd) != this->windowMap.end())
-    {
-        return FALSE;
-    }
-    this->windowMap[window->hwnd] = window;
-    return TRUE;
-}
-
-BOOL EApplicationSingleton::removeWindow(EWindow *window)
-{
-    if (this->windowMap.find(window->hwnd) == this->windowMap.end())
-    {
-        return FALSE;
-    }
-    this->windowMap.erase(window->hwnd);
-    return TRUE;
 }
 
 void EApplicationSingleton::updateDpiFromMonitor()

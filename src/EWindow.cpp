@@ -17,11 +17,6 @@ EWindow::EWindow() : EWidget(EApplication)
     this->width = 800;
     this->height = 600;
     this->initialize();
-    EApplication->addWindow(this);
-}
-EWindow::~EWindow()
-{
-    EApplication->removeWindow(this);
 }
 
 EWindow *EWindow::on(const UINT message, EventEmitterCallback callback)

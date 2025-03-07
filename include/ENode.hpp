@@ -4,14 +4,13 @@
 
 class ENode
 {
-private:
-    friend class EWidget;
+protected:
     ENode* parent;
     std::vector<ENode*> children;
 public:
     ENode(ENode* parent = nullptr);
     ~ENode();
-    ENode* addChild(ENode* child);
+    virtual ENode* addChild(ENode* child);
     ENode* getParent() const;
     size_t getChildrenLength() const;
 };

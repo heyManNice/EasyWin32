@@ -10,8 +10,6 @@
 class EApplicationSingleton : public ENode
 {
 private:
-    friend class EWindow;
-
     /**
      * @brief 单例对象
      *
@@ -23,34 +21,10 @@ private:
     EApplicationSingleton &operator=(const EApplicationSingleton &) {}
 
     /**
-     * @brief 窗口映射表，使用句柄作为索引
-     *
-     */
-    EWindowMap windowMap;
-
-    /**
      * @brief 应用程序的dpi，默认为96
      *
      */
     int dpi = 96;
-
-    /**
-     * @brief 添加窗口
-     *
-     * @param hwnd
-     * @param window
-     * @return BOOL
-     */
-    BOOL addWindow(EWindow *window);
-
-    /**
-     * @brief 删除窗口
-     *
-     * @param hwnd
-     * @return BOOL
-     */
-    BOOL removeWindow(EWindow *window);
-
     /**
      * @brief 入口函数是winMain的标记
      *

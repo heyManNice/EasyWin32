@@ -21,7 +21,6 @@ class EWindow : public EWidget {
         void updateThemeMode();
     public:
         EWindow();
-        ~EWindow();
         /**
          * @brief 注册事件
          * 

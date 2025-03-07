@@ -14,5 +14,13 @@ int main(int argc, char* argv[]){
     )
     ->show();
 
+    auto win1 = new EWindow();
+    win1->show();
+
+    auto win2 = new EWindow();
+    win2->show();
+
+    size_t num = EApplication->getChildrenLength();
+    EApplication->alert(std::to_wstring(num));
     return 0;
 }
