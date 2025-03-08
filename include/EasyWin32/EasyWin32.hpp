@@ -28,7 +28,7 @@ int Emain(HINSTANCE, HINSTANCE, PSTR, int);
 #define COUNT_ARGS(...) COUNT_ARGS_IMPL(_, ##__VA_ARGS__, 6, 5, 4, 3, 2, 1, 0)
 
 /**
- * @brief WinMain的参数类型应为int, char* []
+ * @brief main的参数类型应为int, char* []
  *
  * 参数可以从最后一个开始忽略，但参数类型位置不能改变
  * 
