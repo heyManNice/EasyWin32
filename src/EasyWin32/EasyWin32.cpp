@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-int _USER_MAIN_ENTRY(int argc, char *argv[]);
+int _USER_MAIN_ENTRY(int argc, char *argv[],HINSTANCE hInst,HINSTANCE hInstPrev,PSTR cmdline,int cmdshow);
 
 #ifdef WinMain
 #undef WinMain
@@ -16,7 +16,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR gdiplusToken;
     Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-    int ret = _USER_MAIN_ENTRY(__argc, __argv);
+    int ret = _USER_MAIN_ENTRY(__argc, __argv,hInst,hInstPrev,cmdline,cmdshow);
     MSG msg;
     while (GetMessage(&msg, NULL, 0, 0) > 0)
     {

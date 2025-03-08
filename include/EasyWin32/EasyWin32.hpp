@@ -18,6 +18,10 @@
 
 int Emain();
 int Emain(int, char *[]);
+int Emain(HINSTANCE);
+int Emain(HINSTANCE, HINSTANCE);
+int Emain(HINSTANCE, HINSTANCE, PSTR);
+int Emain(HINSTANCE, HINSTANCE, PSTR, int);
 
 #define COUNT_ARGS_IMPL(_, _1, _2, _3, _4, _5, _6, N, ...) N
 #define COUNT_ARGS(...) COUNT_ARGS_IMPL(_, ##__VA_ARGS__, 6, 5, 4, 3, 2, 1, 0)
@@ -29,28 +33,58 @@ int Emain(int, char *[]);
  */
 #define main(...) MAIN_HELPER(__VA_ARGS__)
 
-#define MAIN_HELPER(...)                                 \
-    _USER_MAIN_ENTRY(int argc, char *argv[])             \
-    {                                                    \
-        if constexpr (COUNT_ARGS(__VA_ARGS__) == 0)      \
-        {                                                \
-            return Emain();                              \
-        }                                                \
-        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 2) \
-        {                                                \
-            return Emain(argc, argv);                    \
-        }                                                \
-        return 0;                                        \
-    }                                                    \
+#define MAIN_HELPER(...)                                                                                      \
+    _USER_MAIN_ENTRY(int argc, char *argv[], HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) \
+    {                                                                                                         \
+        if constexpr (COUNT_ARGS(__VA_ARGS__) == 0)                                                           \
+        {                                                                                                     \
+            return Emain();                                                                                   \
+        }                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 2)                                                      \
+        {                                                                                                     \
+            return Emain(argc, argv);                                                                         \
+        }                                                                                                     \
+        return 0;                                                                                             \
+    }                                                                                                         \
     int Emain(__VA_ARGS__)
 
 /**
- * @brief 用户应该使用main(...)作为程序入口而不是winMain(...)
+ * @brief WinMain的参数类型应为HINSTANCE, HINSTANCE, PSTR, int
  *
+ * 参数可以忽略，但顺序不能改变
+ * 
+ * 可以使用main函数代替WinMain函数
+ *
+ * @param HINSTANCE 程序实例句柄
+ * @param HINSTANCE 应用程序的上一个实例的句柄
+ * @param PSTR 程序的命令行参数
+ * @param int 窗口的显示方式
  */
-#define WinMain(...)                                                 \
-    ENTRYERROR()                                                     \
-    {                                                                \
-        static_assert(false, "你应该使用main(...)代替winMain(...)"); \
-    }                                                                \
-    int main(int argc, char *argv[])
+#define WinMain(...) WINMAIN_HELPER(__VA_ARGS__)
+
+#define WINMAIN_HELPER(...)                                                                                   \
+    _USER_MAIN_ENTRY(int argc, char *argv[], HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) \
+    {                                                                                                         \
+        if constexpr (COUNT_ARGS(__VA_ARGS__) == 0)                                                           \
+        {                                                                                                     \
+            return Emain();                                                                                   \
+        }                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 1)                                                      \
+        {                                                                                                     \
+            return Emain(hInst);                                                                              \
+        }                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 2)                                                      \
+        {                                                                                                     \
+            return Emain(hInst, hInstPrev);                                                                   \
+        }                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 3)                                                      \
+        {                                                                                                     \
+            return Emain(hInst, hInstPrev, cmdline);                                                          \
+        }                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 4)                                                      \
+        {                                                                                                     \
+            return Emain(hInst, hInstPrev, cmdline, cmdshow);                                                 \
+        }                                                                                                     \
+        return 0;                                                                                             \
+    }                                                                                                         \
+    int Emain(__VA_ARGS__)
