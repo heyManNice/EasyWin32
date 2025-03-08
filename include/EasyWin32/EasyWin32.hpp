@@ -51,7 +51,7 @@ int Emain(HINSTANCE, HINSTANCE, PSTR, int);
 /**
  * @brief WinMain的参数类型应为HINSTANCE, HINSTANCE, PSTR, int
  *
- * 参数可以忽略，但顺序不能改变
+ * 参数可以从最后一个开始忽略，但参数类型位置不能改变
  * 
  * 可以使用main函数代替WinMain函数
  *
