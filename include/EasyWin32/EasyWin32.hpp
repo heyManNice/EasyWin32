@@ -33,7 +33,7 @@
 
 /**
  * @brief 检查main函数的参数类型是否匹配并且返回对应的函数指针
- * 
+ *
  * 使用函数指针是为了防止编译编译器在还没有计算移除常量表达式分支
  * 的时候进行语法检查导致的找不到函数定义错误
  *
@@ -42,12 +42,15 @@
  * @example
  * CHECK_MAIN_PARAMS_AND_CALL(num==2, )(int,int);
  */
-#define CHECK_MAIN_PARAMS_AND_CALL(when, ...)                                                                                         \
-    static_assert(!(when) || std::is_same_v<decltype(&Emain), int (*)(__VA_ARGS__)>, "main函数的类型不匹配！参数类型应为("#__VA_ARGS__")"); \
-    int (*func)(__VA_ARGS__) = (int (*)(__VA_ARGS__))Emain;                                                                           \
+#define CHECK_MAIN_PARAMS_AND_CALL(when, ...)                                                                                                 \
+    static_assert(!(when) || std::is_same_v<decltype(&Emain), int (*)(__VA_ARGS__)>, "main函数的类型不匹配！参数类型应为(" #__VA_ARGS__ ")"); \
+    int (*func)(__VA_ARGS__) = (int (*)(__VA_ARGS__))Emain;                                                                                   \
     return func
 
-
+#define CHECK_WINMAIN_PARAMS_AND_CALL(when, ...)                                                                                                 \
+    static_assert(!(when) || std::is_same_v<decltype(&Emain), int (*)(__VA_ARGS__)>, "WinMain函数的类型不匹配！参数类型应为(" #__VA_ARGS__ ")"); \
+    int (*func)(__VA_ARGS__) = (int (*)(__VA_ARGS__))Emain;                                                                                      \
+    return func
 
 #define MAIN_HELPER(...)                                                                                          \
     Emain(__VA_ARGS__);                                                                                           \
@@ -55,19 +58,19 @@
     {                                                                                                             \
         if constexpr (COUNT_ARGS(__VA_ARGS__) == 0)                                                               \
         {                                                                                                         \
-            CHECK_MAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__)==0,)();                                        \
+            CHECK_MAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__) == 0, )();                                         \
         }                                                                                                         \
         else if constexpr (COUNT_ARGS(__VA_ARGS__) == 1)                                                          \
         {                                                                                                         \
-            CHECK_MAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__)==1, int)(argc);                                  \
+            CHECK_MAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__) == 1, int)(argc);                                  \
         }                                                                                                         \
         else if constexpr (COUNT_ARGS(__VA_ARGS__) == 2)                                                          \
         {                                                                                                         \
-            CHECK_MAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__)==2, int, char *[])(argc, argv);                  \
+            CHECK_MAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__) == 2, int, char *[])(argc, argv);                  \
         }                                                                                                         \
         else                                                                                                      \
         {                                                                                                         \
-            static_assert(!(COUNT_ARGS(__VA_ARGS__)>2), "main函数的参数数量必须是0~2个");                          \
+            static_assert(!(COUNT_ARGS(__VA_ARGS__) > 2), "main函数的参数数量必须是0~2个");                       \
         }                                                                                                         \
         return 0;                                                                                                 \
     }                                                                                                             \
@@ -87,29 +90,34 @@
  */
 #define WinMain(...) WINMAIN_HELPER(__VA_ARGS__)
 
-#define WINMAIN_HELPER(...)                                                                                   \
-    _USER_MAIN_ENTRY(int argc, char *argv[], HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) \
-    {                                                                                                         \
-        if constexpr (COUNT_ARGS(__VA_ARGS__) == 0)                                                           \
-        {                                                                                                     \
-            return Emain();                                                                                   \
-        }                                                                                                     \
-        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 1)                                                      \
-        {                                                                                                     \
-            return Emain(hInst);                                                                              \
-        }                                                                                                     \
-        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 2)                                                      \
-        {                                                                                                     \
-            return Emain(hInst, hInstPrev);                                                                   \
-        }                                                                                                     \
-        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 3)                                                      \
-        {                                                                                                     \
-            return Emain(hInst, hInstPrev, cmdline);                                                          \
-        }                                                                                                     \
-        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 4)                                                      \
-        {                                                                                                     \
-            return Emain(hInst, hInstPrev, cmdline, cmdshow);                                                 \
-        }                                                                                                     \
-        return 0;                                                                                             \
-    }                                                                                                         \
+#define WINMAIN_HELPER(...)                                                                                                                   \
+    Emain(__VA_ARGS__);                                                                                                                       \
+    int _USER_MAIN_ENTRY(int argc, char *argv[], HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)                                 \
+    {                                                                                                                                         \
+        if constexpr (COUNT_ARGS(__VA_ARGS__) == 0)                                                                                           \
+        {                                                                                                                                     \
+            CHECK_WINMAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__) == 0, )();                                                                  \
+        }                                                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 1)                                                                                      \
+        {                                                                                                                                     \
+            CHECK_WINMAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__) == 1, HINSTANCE)(hInst);                                                    \
+        }                                                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 2)                                                                                      \
+        {                                                                                                                                     \
+            CHECK_WINMAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__) == 2, HINSTANCE, HINSTANCE)(hInst, hInstPrev);                              \
+        }                                                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 3)                                                                                      \
+        {                                                                                                                                     \
+            CHECK_WINMAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__) == 3, HINSTANCE, HINSTANCE, PSTR)(hInst, hInstPrev, cmdline);               \
+        }                                                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 4)                                                                                      \
+        {                                                                                                                                     \
+            CHECK_WINMAIN_PARAMS_AND_CALL(COUNT_ARGS(__VA_ARGS__) == 4, HINSTANCE, HINSTANCE, PSTR, int)(hInst, hInstPrev, cmdline, cmdshow); \
+        }                                                                                                                                     \
+        else                                                                                                                                  \
+        {                                                                                                                                     \
+            static_assert(!(COUNT_ARGS(__VA_ARGS__) > 4), "main函数的参数数量必须是0~4个");                                                   \
+        }                                                                                                                                     \
+        return 0;                                                                                                                             \
+    }                                                                                                                                         \
     int Emain(__VA_ARGS__)
