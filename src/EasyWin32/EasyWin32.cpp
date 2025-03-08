@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-int _USER_MAIN_ENTRY(int argc, char *argv[],HINSTANCE hInst,HINSTANCE hInstPrev,PSTR cmdline,int cmdshow);
+int _USER_MAIN_ENTRY(int argc, char* argv[],HINSTANCE hInst,HINSTANCE hInstPrev,PSTR cmdline,int cmdshow);
 
 #ifdef WinMain
 #undef WinMain

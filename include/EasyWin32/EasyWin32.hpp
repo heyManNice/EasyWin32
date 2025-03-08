@@ -17,7 +17,8 @@
  */
 
 int Emain();
-int Emain(int, char *[]);
+int Emain(int);
+int Emain(int, char* []);
 int Emain(HINSTANCE);
 int Emain(HINSTANCE, HINSTANCE);
 int Emain(HINSTANCE, HINSTANCE, PSTR);
@@ -27,18 +28,27 @@ int Emain(HINSTANCE, HINSTANCE, PSTR, int);
 #define COUNT_ARGS(...) COUNT_ARGS_IMPL(_, ##__VA_ARGS__, 6, 5, 4, 3, 2, 1, 0)
 
 /**
- * @brief 用户程序入口
- * 参数类型可以是空的，也可以是int, char* []
+ * @brief WinMain的参数类型应为int, char* []
  *
+ * 参数可以从最后一个开始忽略，但参数类型位置不能改变
+ * 
+ * 可以使用WinMain函数代替main函数
+ * 
+ * @param int 传入程序的参数个数
+ * @param char* [] 传入程序的参数字符串数组
  */
 #define main(...) MAIN_HELPER(__VA_ARGS__)
 
 #define MAIN_HELPER(...)                                                                                      \
-    _USER_MAIN_ENTRY(int argc, char *argv[], HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) \
+    _USER_MAIN_ENTRY(int argc, char* argv[], HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) \
     {                                                                                                         \
         if constexpr (COUNT_ARGS(__VA_ARGS__) == 0)                                                           \
         {                                                                                                     \
             return Emain();                                                                                   \
+        }                                                                                                     \
+        else if constexpr (COUNT_ARGS(__VA_ARGS__) == 1)                                                      \
+        {                                                                                                     \
+            return Emain(argc);                                                                         \
         }                                                                                                     \
         else if constexpr (COUNT_ARGS(__VA_ARGS__) == 2)                                                      \
         {                                                                                                     \
@@ -63,7 +73,7 @@ int Emain(HINSTANCE, HINSTANCE, PSTR, int);
 #define WinMain(...) WINMAIN_HELPER(__VA_ARGS__)
 
 #define WINMAIN_HELPER(...)                                                                                   \
-    _USER_MAIN_ENTRY(int argc, char *argv[], HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) \
+    _USER_MAIN_ENTRY(int argc, char* argv[], HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow) \
     {                                                                                                         \
         if constexpr (COUNT_ARGS(__VA_ARGS__) == 0)                                                           \
         {                                                                                                     \
