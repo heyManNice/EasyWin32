@@ -5,6 +5,7 @@
 #pragma comment (lib,"Gdiplus.lib")
 
 #include <iostream>
+#include <sstream>
 
 int _USER_MAIN_ENTRY(int argc, char* argv[],HINSTANCE hInst,HINSTANCE hInstPrev,PSTR cmdline,int cmdshow);
 
@@ -16,12 +17,27 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR gdiplusToken;
     Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-    int ret = _USER_MAIN_ENTRY(__argc, __argv,hInst,hInstPrev,cmdline,cmdshow);
+    int ret = 0;
+    try{
+        ret = _USER_MAIN_ENTRY(__argc, __argv,hInst,hInstPrev,cmdline,cmdshow);
+    }catch(const std::exception& e){
+        std::wstringstream wss;
+        wss << L"初始化错误！\n请检查入口函数内的初始化代码(不包含回调函数)\n错误信息:\n"<<e.what();
+        return MessageBoxW(NULL,wss.str().c_str(),L"EasyWin32初始化错误!",MB_OK|MB_ICONERROR);
+    }
     MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0) > 0)
-    {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+    try{
+        while (GetMessage(&msg, NULL, 0, 0) > 0)
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+    }catch(const std::exception& e){
+        WCHAR title[256];
+        GetWindowTextW(msg.hwnd,title,256);
+        std::wstringstream wss;
+        wss << L"事件过程错误！请检查回调函数\n窗口标题:"<<title<<L"  事件消息值:"<<msg.message<<L"(Windows消息)\n错误信息:\n"<<e.what();
+        return MessageBoxW(msg.hwnd,wss.str().c_str(),L"EasyWin32事件过程错误!",MB_OK|MB_ICONERROR);
     }
     Gdiplus::GdiplusShutdown(gdiplusToken);
     return ret;
