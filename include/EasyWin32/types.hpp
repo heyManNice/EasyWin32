@@ -48,12 +48,6 @@ typedef std::map<HWND,EventEmitterEventMap> EventEmitterHWNDMap;
 #define EApplication EApplicationSingleton::getInstance()
 
 
-/**
- * @brief 窗口映射表，使用句柄作为索引
- * 
- */
-typedef std::map<HWND, EWindow*> EWindowMap;
-
 
 /**
  * @brief 窗口主题色枚举
