@@ -9,16 +9,16 @@
 #include <shellscalingapi.h>
 #pragma comment(lib, "Shcore.lib")
 
-EWindow::EWindow() : EWidget(EApplication)
+EWindow::EWindow() : EWidget(&EApplication)
 {
     this->width = 800;
     this->height = 600;
     this->initialize();
 }
 
-EWindow *EWindow::on(const UINT message, EventEmitterCallback callback)
+EWindow& EWindow::on(const UINT message, EventEmitterCallback callback)
 {
-    EApplication->eventEmitter.on(this->hwnd, message, callback);
+    EApplication.eventEmitter.on(this->hwnd, message, callback);
     switch (message)
     {
     case WM_PAINT:
@@ -28,7 +28,7 @@ EWindow *EWindow::on(const UINT message, EventEmitterCallback callback)
     default:
         break;
     }
-    return this;
+    return *this;
 }
 
 void EWindow::rePaint()
@@ -41,14 +41,14 @@ HWND EWindow::getHWND()
     return this->hwnd;
 }
 
-EWindow *EWindow::setTitle(const std::wstring &title)
+EWindow& EWindow::setTitle(const std::wstring &title)
 {
     this->title = title;
     SetWindowTextW(this->hwnd, title.c_str());
-    return this;
+    return *this;
 }
 
-EWindow *EWindow::setSize(const UINT32 width, const UINT32 height)
+EWindow& EWindow::setSize(const UINT32 width, const UINT32 height)
 {
     this->width = width;
     this->height = height;
@@ -59,35 +59,39 @@ EWindow *EWindow::setSize(const UINT32 width, const UINT32 height)
     rect.bottom = height;
     AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
     SetWindowPos(this->hwnd, NULL, 0, 0, rect.right - rect.left, rect.bottom - rect.top, SWP_NOMOVE | SWP_NOZORDER);
-    return this;
+    return *this;
 }
 
-EWindow *EWindow::setPosition(const INT32 x, const INT32 y)
+EWindow& EWindow::setPosition(const INT32 x, const INT32 y)
 {
     this->x = x;
     this->y = y;
     SetWindowPos(this->hwnd, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-    return this;
+    return *this;
 }
 
-EWindow *EWindow::show()
+EWindow& EWindow::show()
 {
     ShowWindow(this->hwnd, SW_SHOW);
     UpdateWindow(this->hwnd);
-    return this;
+    return *this;
+}
+
+EWindow& EWindow::setLayout(ELayout layout){
+    return *this;
 }
 
 void EWindow::initialize()
 {
     // 创建窗口
-    EApplication->updateDpiFromMonitor();
+    EApplication.updateDpiFromMonitor();
     this->hwnd = CreateWindowExW(NULL, L"EasyWin32ClassName", this->title.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, this->width, this->height, NULL, NULL, GetModuleHandle(NULL), NULL);
     if (this->hwnd == NULL)
     {
         int err = GetLastError();
         wchar_t errorMsg[256];
         FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM, NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), errorMsg, 256, NULL);
-        EApplication->alert(errorMsg, L"错误代码: " + std::to_wstring(err));
+        EApplication.alert(errorMsg, L"错误代码: " + std::to_wstring(err));
         exit(1);
     }
     this->updateThemeMode();

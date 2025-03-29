@@ -61,7 +61,7 @@ BOOL EApplicationSingleton::getIsWinMainEntry()
     return this->isWinMainEntry;
 }
 
-EWindow *EApplicationSingleton::getEWindowByTitle(const std::wstring &title)
+EWindow* EApplicationSingleton::getEWindowByTitle(const std::wstring &title)
 {
     for(auto it = this->children.begin(); it != this->children.end(); it++){
         if (auto window = dynamic_cast<EWindow*>(*it)){
@@ -73,7 +73,7 @@ EWindow *EApplicationSingleton::getEWindowByTitle(const std::wstring &title)
     return nullptr;
 }
 
-EWindow *EApplicationSingleton::getEWindowByHWND(HWND hwnd)
+EWindow* EApplicationSingleton::getEWindowByHWND(HWND hwnd)
 {
     for(auto it = this->children.begin(); it != this->children.end(); it++){
         if (auto window = dynamic_cast<EWindow*>(*it)){
@@ -83,6 +83,11 @@ EWindow *EApplicationSingleton::getEWindowByHWND(HWND hwnd)
         }
     }
     return nullptr;
+}
+
+EWindow& EApplicationSingleton::createWindow(){
+    auto window = new EWindow();
+    return *window;
 }
 
 void EApplicationSingleton::updateDpiFromMonitor()
@@ -101,13 +106,13 @@ LRESULT CALLBACK EApplicationSingleton::WndProc(HWND hwnd, UINT message, WPARAM 
     // 系统主题改变时更新窗口主题色
     case WM_SETTINGCHANGE:
     {
-        auto window = EApplication->getEWindowByHWND(hwnd);
+        auto window = EApplication.getEWindowByHWND(hwnd);
         if (window != nullptr)
         {
             window->updateThemeMode();
         }
         // 更新dpi
-        EApplication->updateDpiFromMonitor();
+        EApplication.updateDpiFromMonitor();
         break;
     }
 
@@ -119,7 +124,7 @@ LRESULT CALLBACK EApplicationSingleton::WndProc(HWND hwnd, UINT message, WPARAM 
         Gdiplus::Graphics graphics(hdc);
         graphics.SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias);
         graphics.SetTextRenderingHint(Gdiplus::TextRenderingHintAntiAlias);
-        int dpi = EApplication->getDPI();
+        int dpi = EApplication.getDPI();
         double scale = (double)dpi / 96;
         graphics.ScaleTransform(scale, scale);
 
@@ -140,8 +145,8 @@ LRESULT CALLBACK EApplicationSingleton::WndProc(HWND hwnd, UINT message, WPARAM 
     }
 
     case WM_DESTROY:{
-        auto win = EApplication->getEWindowByHWND(hwnd);
-        EApplication->removeChild(win);
+        auto win = EApplication.getEWindowByHWND(hwnd);
+        EApplication.removeChild(win);
         delete win;
         }
         break;
@@ -149,5 +154,5 @@ LRESULT CALLBACK EApplicationSingleton::WndProc(HWND hwnd, UINT message, WPARAM 
     default:
         break;
     }
-    return EApplication->eventEmitter.emit(hwnd, message, wParam, lParam);
+    return EApplication.eventEmitter.emit(hwnd, message, wParam, lParam);
 }

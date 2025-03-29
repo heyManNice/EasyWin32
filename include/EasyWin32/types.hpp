@@ -45,7 +45,7 @@ typedef std::map<HWND,EventEmitterEventMap> EventEmitterHWNDMap;
  * 
  * @return EApplicationSingleton* 单例对象
  */
-#define EApplication EApplicationSingleton::getInstance()
+#define EApplication (*EApplicationSingleton::getInstance())
 
 
 

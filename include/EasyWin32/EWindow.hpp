@@ -2,6 +2,7 @@
 
 #include "types.hpp"
 #include "EWidget.hpp"
+#include "ELayout.hpp"
 
 /**
  * @brief 窗口类
@@ -27,7 +28,7 @@ class EWindow : public EWidget {
          * @param message 事件类型
          * @param callback 回调函数
          */
-        EWindow* on(const UINT message, EventEmitterCallback callback);
+        EWindow& on(const UINT message, EventEmitterCallback callback);
         /**
          * @brief 重绘窗口
          *
@@ -50,24 +51,29 @@ class EWindow : public EWidget {
          * @brief 设置标题
          * 
          */
-        EWindow* setTitle(const std::wstring& title);
+        EWindow& setTitle(const std::wstring& title);
     
         /**
          * @brief 设置宽高
          * 
          */
-        EWindow* setSize(const UINT32 width, const UINT32 height);
+        EWindow& setSize(const UINT32 width, const UINT32 height);
     
         /**
          * @brief 设置位置
          *
          */
-        EWindow* setPosition(const INT32 x, const INT32 y);
+        EWindow& setPosition(const INT32 x, const INT32 y);
+        /**
+         * @brief 设置布局
+         * 
+         */
+        EWindow& setLayout(ELayout layout);
     
         /**
          * @brief 显示窗口
          * 
          */
-        EWindow* show();
+        EWindow& show();
     };
     

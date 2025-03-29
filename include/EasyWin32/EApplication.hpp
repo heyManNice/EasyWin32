@@ -67,7 +67,7 @@ public:
      * @param title 标题名称
      * @return EWindow* 窗口实例,找不到则返回nullptr
      */
-    EWindow *getEWindowByTitle(const std::wstring &title);
+    EWindow* getEWindowByTitle(const std::wstring &title);
 
     /**
      * @brief 通过句柄获取窗口实例
@@ -75,7 +75,13 @@ public:
      * @param hwnd 窗口句柄
      * @return EWindow* 窗口实例,找不到则返回nullptr
      */
-    EWindow *getEWindowByHWND(HWND hwnd);
+    EWindow* getEWindowByHWND(HWND hwnd);
+
+    /**
+     * @brief 新建窗口
+     * 
+     */
+    EWindow& createWindow();
 
     /**
      * @brief 获取当前应用程序的dpi

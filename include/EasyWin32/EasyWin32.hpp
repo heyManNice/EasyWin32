@@ -4,6 +4,7 @@
 #include "EWindow.hpp"
 #include "EventEmitter.hpp"
 #include "EWidget.hpp"
+#include "ELayout.hpp"
 
 /**
  * @brief Emain函数，给用户一个入口，用户可以在这里编写自己的代码
