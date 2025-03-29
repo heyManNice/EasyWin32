@@ -3,11 +3,11 @@
 #include "var.hpp"
 
 
-ELayout& lSayHello(){
+ELayout& lSayHello(std::wstring name){
     return lRows()
     .margin(20,20)
     .child(
-        lText(L"Hello World!"),
+        lText(L"Hello " + name),
         lButton(L"btn")
     );
 }
@@ -19,13 +19,9 @@ int main(int argc, char* argv[]){
     window.setTitle(L"Test")
     .setSize(1500, 1000)
     .setPosition(400,400)
-    .setLayout(lSayHello())
+    .setLayout(lSayHello(L"World!"))
     .onDestroy(
         EApplication.quit();
-    )
-    .onMouseLeftUp(
-        size_t num = EApplication.getChildrenLength();
-        EApplication.alert(std::to_wstring(num));
     )
     .show();
 
