@@ -152,8 +152,12 @@ LRESULT CALLBACK EApplicationSingleton::WndProc(HWND hwnd, UINT message, WPARAM 
         auto win = EApplication.getEWindowByHWND(hwnd);
         EApplication.removeChild(win);
         delete win;
+        auto num = EApplication.getChildrenLength();
+        if (num == 0){
+            EApplication.quit();
         }
         break;
+    }
 
     default:
         break;

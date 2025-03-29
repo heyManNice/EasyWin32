@@ -20,9 +20,6 @@ int main(int argc, char* argv[]){
     .setSize(1500, 1000)
     .setPosition(400,400)
     .setLayout(lSayHello(L"World!"))
-    .onDestroy(
-        EApplication.quit();
-    )
     .show();
 
     return 0;
