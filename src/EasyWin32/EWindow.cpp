@@ -40,6 +40,9 @@ HWND EWindow::getHWND()
 {
     return this->hwnd;
 }
+ELayout& EWindow::getLayout(){
+    return this->layout;
+}
 
 EWindow& EWindow::setTitle(const std::wstring &title)
 {
@@ -78,6 +81,9 @@ EWindow& EWindow::show()
 }
 
 EWindow& EWindow::setLayout(ELayout& layout){
+    layout.width = this->width;
+    layout.height = this->height;
+    this->layout = layout;
     return *this;
 }
 

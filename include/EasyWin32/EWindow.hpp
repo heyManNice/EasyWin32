@@ -13,6 +13,8 @@ class EWindow : public EWidget {
         friend class EApplicationSingleton;
     
         HWND hwnd;
+
+        ELayout& layout = lText(L"none");
         
         void initialize();
         /**
@@ -39,6 +41,12 @@ class EWindow : public EWidget {
          * 
          */
         HWND getHWND();
+
+        /**
+         * @brief 获取布局
+         * 
+         */
+        ELayout& getLayout();
         /**
          * @brief 设置窗口主题色
          * 
@@ -75,5 +83,5 @@ class EWindow : public EWidget {
          * 
          */
         EWindow& show();
-    };
+};
     

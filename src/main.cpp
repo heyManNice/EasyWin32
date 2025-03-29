@@ -5,6 +5,7 @@
 
 ELayout& lSayHello(){
     return lRows()
+    .margin(20,20)
     .child(
         lText(L"Hello World!"),
         lButton(L"btn")

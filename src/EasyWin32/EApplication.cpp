@@ -128,16 +128,20 @@ LRESULT CALLBACK EApplicationSingleton::WndProc(HWND hwnd, UINT message, WPARAM 
         double scale = (double)dpi / 96;
         graphics.ScaleTransform(scale, scale);
 
-        // 绘图
-        Gdiplus::Pen pen(Gdiplus::Color(255, 0, 0, 0));
-        pen.SetWidth(10);
-        graphics.DrawRectangle(&pen, 10, 10, 200, 100);
-        graphics.DrawEllipse(&pen, 500, 500, 100, 100);
-        Gdiplus::FontFamily fontFamily(L"HarmonyOS Sans sC");
-        Gdiplus::Font font(&fontFamily, 100, Gdiplus::FontStyleRegular, Gdiplus::UnitPixel);
-        Gdiplus::SolidBrush solidBrush(Gdiplus::Color(255, 0, 0, 0));
-        Gdiplus::PointF pointF(100, 300);
-        graphics.DrawString(L"Hello, GDI+!鸿蒙系统", -1, &font, pointF, &solidBrush);
+        auto layout = EApplication.getEWindowByHWND(hwnd)->getLayout();
+        
+        for(ELayout& child: layout.getChildren()){
+            if(!child.text.empty()){
+                Gdiplus::FontFamily fontFamily(L"HarmonyOS Sans sC");
+                Gdiplus::Font font(&fontFamily, 30, Gdiplus::FontStyleRegular, Gdiplus::UnitPixel);
+                Gdiplus::SolidBrush solidBrush(Gdiplus::Color(255, 0, 0, 0));
+                Gdiplus::PointF pointF(child.x, child.y);
+                graphics.DrawString(child.text.c_str(), -1, &font, pointF, &solidBrush);
+                
+                Gdiplus::Pen pen(Gdiplus::Color(255, 0, 0, 0), 2);
+                graphics.DrawRectangle(&pen, child.x, child.y, child.width, child.height);
+            }
+        }
 
         // 结束
         EndPaint(hwnd, &ps);
