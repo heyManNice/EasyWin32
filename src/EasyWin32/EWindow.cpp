@@ -77,7 +77,7 @@ EWindow& EWindow::show()
     return *this;
 }
 
-EWindow& EWindow::setLayout(ELayout layout){
+EWindow& EWindow::setLayout(ELayout& layout){
     return *this;
 }
 

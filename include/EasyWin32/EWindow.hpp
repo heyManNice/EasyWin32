@@ -68,7 +68,7 @@ class EWindow : public EWidget {
          * @brief 设置布局
          * 
          */
-        EWindow& setLayout(ELayout layout);
+        EWindow& setLayout(ELayout& layout);
     
         /**
          * @brief 显示窗口

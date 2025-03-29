@@ -3,7 +3,7 @@
 #include "var.hpp"
 
 
-ELayout lSayHello(){
+ELayout& lSayHello(){
     return lRows()
     .child(
         lText(L"Hello World!"),
